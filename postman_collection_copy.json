@@ -1,0 +1,109 @@
+{
+  "info": {
+    "_postman_id": "c3f6846a-844c-4cc4-9e7c-5bcefdcc1a4b",
+    "name": "Sistema Autenticacao Autorizacao",
+    "description": "Collection Postman para testar a API de autenticacao localmente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"senha\": \"{{senha}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Efetua login e retorna access token, refresh token e dados basicos do usuario."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Resposta contem tokens\", function () {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.accessToken).to.be.a(\"string\").and.not.empty;",
+                  "  pm.expect(json.refreshToken).to.be.a(\"string\").and.not.empty;",
+                  "  pm.expect(json.expiresIn).to.be.a(\"number\");",
+                  "  pm.expect(json.usuario).to.be.an(\"object\");",
+                  "  pm.expect(json.usuario.id).to.be.a(\"string\");",
+                  "  pm.expect(json.usuario.nome).to.be.a(\"string\");",
+                  "  pm.expect(json.usuario.perfil).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set(\"accessToken\", json.accessToken);",
+                  "pm.collectionVariables.set(\"refreshToken\", json.refreshToken);",
+                  "pm.collectionVariables.set(\"usuarioId\", json.usuario.id);",
+                  "pm.collectionVariables.set(\"usuarioNome\", json.usuario.nome);",
+                  "pm.collectionVariables.set(\"usuarioPerfil\", json.usuario.perfil);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "email",
+      "value": "usuario@email.com"
+    },
+    {
+      "key": "senha",
+      "value": "senha"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    },
+    {
+      "key": "usuarioId",
+      "value": ""
+    },
+    {
+      "key": "usuarioNome",
+      "value": ""
+    },
+    {
+      "key": "usuarioPerfil",
+      "value": ""
+    }
+  ]
+}
