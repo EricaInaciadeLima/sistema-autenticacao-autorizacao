@@ -3,8 +3,7 @@ import {
   CreateRefreshTokenDTO,
   IRefreshTokenRepository,
   RefreshToken,
-} from "../pg/refresh.token.repository.2";
-
+} from "../refresh-token.repository";
 
 export class PostgresRefreshTokenRepository
   implements IRefreshTokenRepository
@@ -57,7 +56,13 @@ export class PostgresRefreshTokenRepository
       ]
     );
 
-    return rows[0];
+    const refreshToken = rows[0];
+
+    if (!refreshToken) {
+      throw new Error("Refresh token nao foi criado");
+    }
+
+    return refreshToken;
   }
 
   async revoke(id: string): Promise<void> {

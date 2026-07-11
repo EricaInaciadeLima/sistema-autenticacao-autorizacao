@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
-import { env } from "../env";
+import { env } from "../config/env";
 import { IUserRepository } from "../repository/user.repository";
 import { IRefreshTokenRepository } from "../repository/refresh-token.repository";
 

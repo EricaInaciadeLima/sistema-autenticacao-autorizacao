@@ -14,7 +14,7 @@ export interface CreateUserDTO {
   perfil: string;
 }
 
-export interface UserRepository {
+export interface IUserRepository {
   findByEmail(email: string): Promise<User | null>;
   findById(id: string): Promise<User | null>;
   create(data: CreateUserDTO): Promise<User>;
