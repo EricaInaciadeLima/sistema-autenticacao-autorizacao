@@ -3,7 +3,7 @@ import {
   IUserRepository,
   User,
   CreateUserDTO,
-} from "./user.repository.2";
+} from "../user.repository";
 
 export class PostgresUserRepository implements IUserRepository {
   async findByEmail(email: string): Promise<User | null> {
@@ -72,6 +72,12 @@ export class PostgresUserRepository implements IUserRepository {
       ]
     );
 
-    return rows[0];
+    const user = rows[0];
+
+    if (!user) {
+      throw new Error("Usuario nao foi criado");
+    }
+
+    return user;
   }
 }

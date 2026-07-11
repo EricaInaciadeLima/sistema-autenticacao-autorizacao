@@ -4,9 +4,10 @@ import { env } from "./env";
 export const pool = new Pool({
   connectionString: env.databaseUrl,
 });
+console.log("Connection String:", env.databaseUrl);
 
 export async function ensureSchema(): Promise<void> {
-  await pool.query(
+  await pool.query(`
     CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
     CREATE TABLE IF NOT EXISTS usuarios (
@@ -26,5 +27,5 @@ export async function ensureSchema(): Promise<void> {
       revoked_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
-  );
+  `);
 }
