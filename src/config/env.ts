@@ -28,4 +28,8 @@ export const env = {
     "JWT_REFRESH_EXPIRES_IN_SECONDS",
     60 * 60 * 24 * 7
   ),
+
+    userAdmin: "admintest@gamil.com",
+    userPassword: "123456",
+    userName: "Erica",
 };

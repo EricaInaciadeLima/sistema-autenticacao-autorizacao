@@ -1,0 +1,52 @@
+expect(//REFRESSrefreshRes.body.refreshToken).not.toBe(oldRefreshToken//LOGIN );
+deve rotaciona o token e emite um novo quando chamar refresh
+TODO: authMiddleware, asynchadler e loginSchema
+import * as yup from "yup";
+
+export interface LoginInput {
+  email: string;
+  senha: string;
+}
+
+const loginSchema: yup.ObjectSchema<LoginInput> = yup
+  .object({
+    email: yup
+      .string()
+      .transform((value: unknown, originalValue: unknown) =>
+        typeof originalValue === "string" ? originalValue.trim().toLowerCase() : value
+      )
+      .required("email é obrigatório")
+      .email("email deve ser válido")
+      .max(254, "email deve ter no máximo 254 caracteres"),
+    senha: yup
+      .string()
+      .required("senha é obrigatória")
+      .test("not-blank", "senha é obrigatória", (value) => typeof value === "string" && value.trim() !== "")
+      .max(128, "senha deve ter no máximo 128 caracteres"),
+  })
+  .required()
+  .noUnknown(true);
+
+export async function validateLoginInput(payload: unknown): Promise<LoginInput> {
+  try {
+    return await loginSchema.validate(payload, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+  } catch (err) {
+    if (err instanceof yup.ValidationError) {
+      throw new Error(400, err.errors.join("; "));
+    }
+    throw err;
+  }
+}
+
+//asncy hadler
+
+Builder, Fluent Interface e Chaining
+//pesquisa sobre Promisse
+entender o node, arquitetura
+comparar javascrpt vs java
+java-> pode ter muilt threads
+
+CompletableFuture(java 8) vs Promisse
