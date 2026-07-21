@@ -6,7 +6,8 @@
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "test": "jest --runInBand",
-    "test:watch": "jest --runInBand --watch"
+    "test:watch": "jest --runInBand --watch",
+    "seed": "tsx src/config/seed/create-user.ts"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

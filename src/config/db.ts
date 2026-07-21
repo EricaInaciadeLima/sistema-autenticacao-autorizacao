@@ -9,7 +9,7 @@ console.log("Connection String:", env.databaseUrl);
 export async function ensureSchema(): Promise<void> {
   await pool.query(`
     CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
+ 
     CREATE TABLE IF NOT EXISTS usuarios (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       nome TEXT NOT NULL,

@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 import { env } from "../config/env";
 import { IUserRepository } from "../repository/user.repository";
-import { IRefreshTokenRepository } from "../repository/refresh-token.repository";
+import {IRefreshTokenRepository, RefreshToken} from "../repository/refresh-token.repository";
 
 export interface LoginResult {
   accessToken: string;
@@ -20,6 +20,7 @@ export interface UsuarioResponse {
 }
 
 export class AuthService {
+  private tokenService: any;
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly refreshTokenRepository: IRefreshTokenRepository
@@ -43,7 +44,36 @@ export class AuthService {
 
     return this.issueTokenPair(user);
   }
+ async refreshToken(refreshToken: string): Promise<RefreshToken> {
+   //  refreshToken():void{
+   // receber argumento ->
+   //varificar o refresh com o jwt,
+   // tratar as exceptions (TokenExpiredError e JsonWebTokenError)
+   // RefreshTokenClaims -> atributos de um token
+//   }
+// example:
+//   export function verifyRefreshToken(token: string): RefreshTokenClaims {
+//     return jwt.verify(token, env.jwtRefreshSecret, {
+//       algorithms: ["HS256"],
+//     }) as RefreshTokenClaims;
+//   }
 
+   const refreshTokenClaims = await this.tokenService.verifyRefreshToken(refreshToken);
+    const refreshToken = await this.refreshTokenRepository.findById(refreshTokenClaims.jti);
+    
+    if (refreshToken.expires_at.getTime() < Date.now()) {
+      throw new Error("Refresh token expired 401");
+    }
+    if(refreshToken.revoked_at){
+      throw new Error("Refresh token expired 401");
+    }
+    if(userId !== refreshToken.sub){
+      throw new Error("Refresh token expired 401");
+    }
+    await this.refreshTokenRepository.revoke(refreshToken.id);
+    const user = await  this.userRepository.findById(refreshTokenClaims.sub);
+    this.issueTokenPair(user)
+ }
   private async issueTokenPair(user: {
     id: string;
     nome: string;
@@ -61,6 +91,7 @@ export class AuthService {
         algorithm: "HS256",
       }
     );
+    
 
     // id do refresh token
     const refreshTokenId = crypto.randomUUID();
